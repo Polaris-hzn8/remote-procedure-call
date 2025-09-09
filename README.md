@@ -23,54 +23,8 @@ C++实现轻量级RPC分布式网络通信框架：https://blog.csdn.net/asdfada
 
 ![image-20230426200652519](https://s2.loli.net/2023/04/26/BIKyRpa53wmOfsN.png)
 
-- 黄色部分：设计rpc方法参数的打包和解析，即数据的序列化和反序列化，使用protobuf
-- 绿色部分：网络部分，包括寻找rpc服务主机，发起rpc调用请求和响应rpc调用结果，使用netty网络库。
-
-安装多个版本的protobuf：
-
-```shell
-# 下载源码并安装 protobuf 2.x
-# protoc2 安装在 /opt/protobuf2/bin/protoc
-wget https://github.com/protocolbuffers/protobuf/releases/download/v2.6.1/protobuf-2.6.1.tar.gz
-tar -xzf protobuf-2.6.1.tar.gz
-cd protobuf-2.6.1
-./configure --prefix=/opt/protobuf2
-make -j$(nproc)
-sudo make install
-# 下载并安装 protobuf 3.x
-# protoc3 安装在 /opt/protobuf3/bin/protoc
-wget https://github.com/protocolbuffers/protobuf/releases/download/v3.20.3/protobuf-cpp-3.20.3.tar.gz
-tar -xzf protobuf-cpp-3.20.3.tar.gz
-cd protobuf-3.20.3
-./configure --prefix=/opt/protobuf3
-make -j$(nproc)
-sudo make install
-# 切换使用版本
-# 临时切换
-export PATH=/opt/protobuf2/bin:$PATH   # 使用 protoc 2.x
-export PATH=/opt/protobuf3/bin:$PATH   # 使用 protoc 3.x
-# 永久切换，可以写到 ~/.bashrc
-# 或者用 update-alternatives：同时管理多个版本的 protoc
-sudo update-alternatives --install /usr/bin/protoc protoc /opt/protobuf2/bin/protoc 20
-sudo update-alternatives --install /usr/bin/protoc protoc /opt/protobuf3/bin/protoc 30
-sudo update-alternatives --config protoc
-```
-
-```
-wget https://github.com/protocolbuffers/protobuf/releases/download/v3.20.3/protobuf-cpp-3.20.3.tar.gz
-tar -xzf protobuf-cpp-3.20.3.tar.gz
-cd protobuf-3.20.3
-./configure --prefix=/opt/protobuf3
-make -j$(nproc)
-sudo make install
-
-```
-
-
-
-
-- 序列化/反序列化：涉及RPC方法参数的打包与解析，利用protobuf实现。
-- 数据传输网络部分：包括寻找RPC服务主机，发起RPC调用请求以及响应RPC调用结果，使用netty网络库。
+- 黄色部分（序列化/反序列化）：设计rpc方法参数的打包和解析，即数据的序列化和反序列化，利用protobuf实现
+- 绿色部分（数据传输网络部分）：网络部分，包括寻找rpc服务主机，发起rpc调用请求和响应rpc调用结果，使用netty网络库。
 
 ### 3.网络IO模型
 
@@ -128,6 +82,48 @@ sudo make install
 # 刷新动态库
 sudo ldconfig
 ```
+
+安装多个版本的protobuf：
+
+```shell
+# 下载源码并安装 protobuf 2.x
+# protoc2 安装在 /opt/protobuf2/bin/protoc
+wget https://github.com/protocolbuffers/protobuf/releases/download/v2.6.1/protobuf-2.6.1.tar.gz
+tar -xzf protobuf-2.6.1.tar.gz
+cd protobuf-2.6.1
+./configure --prefix=/opt/protobuf2
+make -j$(nproc)
+sudo make install
+# 下载并安装 protobuf 3.x
+# protoc3 安装在 /opt/protobuf3/bin/protoc
+wget https://github.com/protocolbuffers/protobuf/releases/download/v3.20.3/protobuf-cpp-3.20.3.tar.gz
+tar -xzf protobuf-cpp-3.20.3.tar.gz
+cd protobuf-3.20.3
+./configure --prefix=/opt/protobuf3
+make -j$(nproc)
+sudo make install
+# 切换使用版本
+# 临时切换
+export PATH=/opt/protobuf2/bin:$PATH   # 使用 protoc 2.x
+export PATH=/opt/protobuf3/bin:$PATH   # 使用 protoc 3.x
+# 永久切换，可以写到 ~/.bashrc
+# 或者用 update-alternatives：同时管理多个版本的 protoc
+sudo update-alternatives --install /usr/bin/protoc protoc /opt/protobuf2/bin/protoc 20
+sudo update-alternatives --install /usr/bin/protoc protoc /opt/protobuf3/bin/protoc 30
+sudo update-alternatives --config protoc
+```
+
+```
+wget https://github.com/protocolbuffers/protobuf/releases/download/v3.20.3/protobuf-cpp-3.20.3.tar.gz
+tar -xzf protobuf-cpp-3.20.3.tar.gz
+cd protobuf-3.20.3
+./configure --prefix=/opt/protobuf3
+make -j$(nproc)
+sudo make install
+
+```
+
+
 
 #### zookeeper
 
