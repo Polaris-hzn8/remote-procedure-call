@@ -1,29 +1,25 @@
-# 分布式网络通信框架myrpc
+# 分布式网络通信框架RPC
 
 ---
 
-优秀参考：
+RPC：远程过程调用Remote Procedure Call Protocal
 
-- C++实现轻量级RPC分布式网络通信框架：https://blog.csdn.net/asdfadafd/article/details/126801651
-- 施磊：基于protobuf与muduo的rpc框架
+C++实现轻量级RPC分布式网络通信框架：https://blog.csdn.net/asdfadafd/article/details/126801651
 
-### 一、主要技术点
+### 1.技术点
 
-1. 集群与分布式概念以及理论
+1. 集群与分布式理论
 2. RPC远程过程调用原理以及实现
-3. Protobuf数据序列化和反序列化协议
-4. Zookeeper分布式一致性协调服务应用以及编程
-5. muduo网络库编程
+3. 数据序列化与反序列化：Protobuf
+4. 服务注册中心：Zookeeper分布式一致性协调服务
+5. 网络库编程：muduo
 6. conf配置文件读取
-7. Cmake构建项目集成编译环境
+7. cmake构建项目集成编译环境
 
-### 二、集群和分布式
+### 2.集群与分布式
 
-集群：每一台服务器独立运行一个工程的所有模块
-
-分布式：一个工程拆分了很多模块，每一个模块独立部署运行在一个服务器主机上，所有服务器协同工作共同提供服务，每一台服务器称为分布式的一个结点，根据结点的并发要求，对一个结点可以再做结点模块集群部署。
-
-RPC通信原理：Remote Procedure Call Protocal远程过程调用协议，
+- 集群：每台服务器独立运行工程项目的所有模块
+- 分布式：工程项目被拆分多个模块，每个模块独立部署运行到一个服务器主机上，所有服务器协同工作共同提供服务。每台服务器称为分布式的一个结点，根据结点的并发要求，可对结点再做结点模块集群部署。
 
 ![image-20230426200652519](https://s2.loli.net/2023/04/26/BIKyRpa53wmOfsN.png)
 
@@ -73,6 +69,104 @@ sudo make install
 
 
 
+- 序列化/反序列化：涉及RPC方法参数的打包与解析，利用protobuf实现。
+- 数据传输网络部分：包括寻找RPC服务主机，发起RPC调用请求以及响应RPC调用结果，使用netty网络库。
+
+### 3.网络IO模型
+
+1. accpet + read/write
+
+2. accept + fork（process pre connection）
+
+3. accept + thread（thread pre connection）
+
+4. muduo：reactors in threads（one loop per thread）
+
+   主反应堆负责accept连接然后分发到多个sub reactor中，该连接的所有操作都在sub reactor所处的线程中完成，多个连接可能被分派到多个线程中，以充分利用CPU资源。
+
+5. nginx：reactors in process（one loop per process）
+
+   nginx服务器的网络模块基于进程设计，采用多个Reactors充当IO进程和工作进程，通过accept锁解决多个Reactors的惊群现象。
+
+### 4.RPC框架设计
+
+
+
+
+
+
+
+
+
+
+
+
+
+### 5.第三方框架/工具
+
+#### protobuff
+
+protocal buffer是google的一种数据交换格式，其独立于平台语言。google提供了protobuff多种语言的实现：java、c#、c++、go以及python，每种实现都包含了相应语言的编译器以及库文件。
+
+由于其为二进制格式，比使用xml\Json等格式进行数据交换快许多，可以将其用于分布式应用之间的数据通信或者，异构环境下的数据交换。作为一种效率和兼容性都非常优秀的二进制数据传输格式，可以用于诸如网络传输、配置文件、数据存储等诸多领域。
+
+安装流程：
+
+```shell
+# 解压源码
+unzip protobuf-master.zip
+# 安装所需的工具
+cd protobuf-master
+sudo apt-get install autoconf automake libtool curl make g++ unzip
+# 自动生成configure配置文件
+./autogen.sh
+# 配置环境
+./configure
+# 编译源代码并安装
+make
+sudo make install
+# 刷新动态库
+sudo ldconfig
+```
+
+#### zookeeper
+
+Zookeeper在分布式环境中应用十分广泛，其优秀的功能很多，如分布式环境中全局命名服务注册中心，全局分布式锁等。参考：https://www.cnblogs.com/xinyonghu/p/11031729.html
+
+几个问题：
+
+1. zk的数据是如何组织的？znode节点
+2. zk的watcher机制？
+
+```shell
+# 解压源码
+unzip zookeeper-3.4.10.tar.gz
+# 配置文件
+cd conf
+mv zoo_sample.cfg zoo.cfg
+# 启动zookeeper
+cd bin
+./zkServer.sh start
+# 通过 netstat 查看 zkServer 的端口
+# 在bin目录启动zkClient.sh链接zkServer
+# 熟悉zookeeper组织节点
+```
+
+zookeeper已经提供了原生的C/C++和JavaAPI开发的接口，需要通过源码编译生成：
+
+```shell
+# zk的原生开发api
+# 进入解压后的src/c目录下
+ sudo ./configure
+ sudo make
+ sudo make install
+```
+
+主要关注zookeeper如何管理节点：创建节点、获取节点，删除节点以及watcher机制的API编程。
+
+znode节点存储格式：
+
+![image-20250805141050032](assets/image-20250805141050032.png)
 
 
 
