@@ -30,9 +30,45 @@ RPC通信原理：Remote Procedure Call Protocal远程过程调用协议，
 - 黄色部分：设计rpc方法参数的打包和解析，即数据的序列化和反序列化，使用protobuf
 - 绿色部分：网络部分，包括寻找rpc服务主机，发起rpc调用请求和响应rpc调用结果，使用netty网络库。
 
+安装多个版本的protobuf：
 
+```shell
+# 下载源码并安装 protobuf 2.x
+# protoc2 安装在 /opt/protobuf2/bin/protoc
+wget https://github.com/protocolbuffers/protobuf/releases/download/v2.6.1/protobuf-2.6.1.tar.gz
+tar -xzf protobuf-2.6.1.tar.gz
+cd protobuf-2.6.1
+./configure --prefix=/opt/protobuf2
+make -j$(nproc)
+sudo make install
+# 下载并安装 protobuf 3.x
+# protoc3 安装在 /opt/protobuf3/bin/protoc
+wget https://github.com/protocolbuffers/protobuf/releases/download/v3.20.3/protobuf-cpp-3.20.3.tar.gz
+tar -xzf protobuf-cpp-3.20.3.tar.gz
+cd protobuf-3.20.3
+./configure --prefix=/opt/protobuf3
+make -j$(nproc)
+sudo make install
+# 切换使用版本
+# 临时切换
+export PATH=/opt/protobuf2/bin:$PATH   # 使用 protoc 2.x
+export PATH=/opt/protobuf3/bin:$PATH   # 使用 protoc 3.x
+# 永久切换，可以写到 ~/.bashrc
+# 或者用 update-alternatives：同时管理多个版本的 protoc
+sudo update-alternatives --install /usr/bin/protoc protoc /opt/protobuf2/bin/protoc 20
+sudo update-alternatives --install /usr/bin/protoc protoc /opt/protobuf3/bin/protoc 30
+sudo update-alternatives --config protoc
+```
 
+```
+wget https://github.com/protocolbuffers/protobuf/releases/download/v3.20.3/protobuf-cpp-3.20.3.tar.gz
+tar -xzf protobuf-cpp-3.20.3.tar.gz
+cd protobuf-3.20.3
+./configure --prefix=/opt/protobuf3
+make -j$(nproc)
+sudo make install
 
+```
 
 
 
