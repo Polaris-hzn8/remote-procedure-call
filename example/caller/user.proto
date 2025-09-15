@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package fixbug;
+option cc_generic_services = true;
+/////////////////////////////////////////////////////////
+message ResultCode {
+    int32 err_code = 1;
+    bytes err_msg = 2;
+}
+message UserInfo {
+    uint32 id = 1;
+    bytes name = 2;
+    uint32 age = 3;
+    enum Sex {
+        MAN = 0;
+        WOMAN = 1;
+    }
+    Sex sex = 4;
+}
+
+/////////////////////////////////////////////////////////
+message LoginRequest {
+    uint32 user_id = 1;
+    string pass_word = 2;
+}
+message LoginResponse {
+    ResultCode ret_code = 1;
+    bool success = 2;
+}
+message GetFriendListRequest {
+    uint32 user_id = 1;
+}
+message GetFriendListResponse {
+    ResultCode ret_code = 1;
+    repeated UserInfo friend_list = 2;
+}
+// 描述rpc方法类型
+service UserSeriviceRpc {
+    rpc Login(LoginRequest) returns(LoginResponse);
+    rpc GetFriendList(GetFriendListRequest) returns(GetFriendListResponse);
+}

@@ -1,5 +1,5 @@
 
-#include "test.pb.h"
+#include "pbgen/test.pb.h"
 #include <iostream>
 #include <string>
 using namespace fixbug;
