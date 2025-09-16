@@ -3,6 +3,7 @@
 
 #include <string>
 #include <iostream>
+#include "user.pb.h"
 
 class UserService
 {
